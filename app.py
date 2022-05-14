@@ -3,10 +3,12 @@ import json
 import enum
 from flask_sqlalchemy import SQLAlchemy
 import datetime
+from flask_cors import CORS
 from dataclasses import dataclass
 
 
 app = Flask(__name__)
+CORS(app)
 
 app.config['PROPAGATE_EXCEPTIONS'] = True
 app.config["SECRET_KEY"] = '571ebf8e13ca209536c29be68d435c00'
@@ -45,16 +47,25 @@ def api():
     issues = Issue.query.all()
     return jsonify(issues)
 
-@app.route('/api-post', methods=['POST'])
+@app.route('/taken', methods=['POST'])
 def postmethod():
-    data = request.get_json()
-    print(data)
+    data = request.get_json(force=True)
+    issue = Issue.query.get(data["id"])
+    print(issue)
+    for x in data:
+        print(x)
+        print(data[x])
+        issue.x = data[x]
+    db.session.add(issue)
+    db.session.commit()
+
+
     return jsonify(data)
 
 
 if __name__ == '__main__':
-    issue1 = Issue(problem="PROBLEM", location="KLETA MAIKA BALGARIQ", urgency="normal",aval_time_start = datetime.datetime.now(),aval_time_end = datetime.datetime.now(), taken=True, done=False)
-    db.create_all()
-    db.session.add(issue1)
-    db.session.commit()
-    app.run(debug=False, host='0.0.0.0')
+    # issue1 = Issue(problem="PROBLEM", location="KLETA MAIKA BALGARIQ", urgency="normal",aval_time_start = datetime.datetime.now(),aval_time_end = datetime.datetime.now(), taken=True, done=False)
+    # db.create_all()
+    # db.session.add(issue1)
+    # db.session.commit()
+    app.run(debug=True, host='0.0.0.0')
