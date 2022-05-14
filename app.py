@@ -59,7 +59,6 @@ def postmethod():
     db.session.add(issue)
     db.session.commit()
 
-
     return jsonify(data)
 
 
