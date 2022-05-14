@@ -55,7 +55,7 @@ def postmethod():
     for x in data:
         print(x)
         print(data[x])
-        issue.x = data[x]
+        setattr(issue, x, data[x])
     db.session.add(issue)
     db.session.commit()
 
